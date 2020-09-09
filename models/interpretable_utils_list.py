@@ -187,9 +187,12 @@ def get_attributions(p, mask_mat, mode = 'L1', multiply_self = True):
     else:
         conf = mask_Lp(p)
     mask = tf.map_fn(lambda x: tf.reduce_prod(1. - x * conf, axis=-1), tf.transpose(mask_mat))
-    mask = tf.transpose(mask, [1, 2, 0])
+    if tf.shape(mask).shape == 2:
+        mask = tf.transpose(mask, [1, 0])
+    else:
+        mask = tf.transpose(mask, [1, 2, 0])
     if multiply_self:
-        mask = mask * conf         # -- faster training
+        mask = mask * conf         # -- faster training, depends on the model
     return mask
 
 def MoE(p, mask_mat, mode = 'L1'):

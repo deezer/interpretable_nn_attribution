@@ -346,8 +346,6 @@ test_scores = 0
 test_scores_baseline = 0
 
 if TRAIN:
-    X_val, Y_val = dataset.get_aug_implicit_data(D = 0, mode = MODE, target_set='val_set')
-
     for e in range(20):
         print("Epoch", e)
         X, Y = dataset.get_aug_implicit_data(D = 4, mode = MODE)
