@@ -180,6 +180,12 @@ def mask_Lp(p, n = 4):
     return conf
 
 def get_attributions(p, mask_mat, mode = 'L1', multiply_self = True):
+    """
+    Get the attribution values from predictions `p` and with
+    matrix of strictly included childs `mask_mat` (corresponding to the \omega
+    function defined in the paper).
+    `multiply_self` depends on how we model $f_i$ and $g_i$.
+    """
     if mode == 'L1':
         conf = mask_L1(p)
     elif mode == 'L2':
@@ -196,16 +202,16 @@ def get_attributions(p, mask_mat, mode = 'L1', multiply_self = True):
     return mask
 
 def MoE(p, mask_mat, mode = 'L1'):
+    ''' for p in [-1,1] '''
     mask = get_attributions(p, mask_mat, mode)
     y = tf.reduce_sum(mask * p, axis=-1, keepdims=True) / (1e-9 + tf.reduce_sum(mask, axis=-1, keepdims=True))
     return y
 
 
-# -- movielens MoE
+# -- Movielens MoE
 
 def get_attributions_movielens(p, mask_mat, n = 4, multiply_self = True):
-    # conf = tf.stop_gradient(tf.abs(p - 0.3)) / 0.7
-
+    ''' for p in [0,1] '''
     conf_up = tf.stop_gradient(tf.pow(tf.abs(p - 0.3), n))
     conf_down = tf.stop_gradient(tf.pow(tf.abs(p - 0.3), n-1))
     conf = conf_up / (1 + conf_down) * (tf.pow(tf.abs(0.7), n-1) + 1) / tf.pow(tf.abs(0.7), n)

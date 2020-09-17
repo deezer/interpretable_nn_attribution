@@ -50,6 +50,7 @@ SAVE = args.save_weights
 DIR = args.save_dir
 TRAIN = args.train
 
+
 ## model definition (based on the dataset object)
 
 class Aug_NCF_MLP:
@@ -222,38 +223,31 @@ class Int_NCF_MLP:
         z4 = apply_layer(z3_group, self.dense_block, { 'F': (F // 4) // dF * DF, 'name': 'fc4' })
         z4_group = gather_int(z4, TR)
 
-        v_int = apply_layer(z4_group, self.out_block, {})
+        v_int = apply_layer(z4_group, self.out_block, {})  # sigmoid
         v_concat = Concatenate(axis=-1)(v_int)
         v_out = Lambda(lambda x: MoE_movielens(x, CM))(v_concat)
 
         self.model_out = Model(inputs=model_inputs, outputs=v_out)
-        if params['loss'] == 'intr_l2_tiled':
-            model = Model(inputs=model_inputs, outputs=v_concat)
-            model.compile(
-                loss = self.tiled_model_loss(CM),
-                optimizer=Adam(1e-3),
-                metrics=['acc'],
-            )
-        else:
-            model = self.model_out
-            model.compile(
-                loss = 'binary_crossentropy',
-                optimizer=Adam(1e-3),
-                metrics=['acc'],
-            )
-        self.model = model
 
-    def tiled_model_loss(self, mask_mat):
+        self.model = Model(inputs=model_inputs, outputs=v_concat)
+        self.model.compile(
+            loss = self.model_loss(CM),
+            optimizer=Adam(1e-3),
+            metrics=['acc'],
+        )
+
+
+    def model_loss(self, mask_mat):
         @tf.function
         def loss(y, p_concat):
             eps = 1e-6
             mask = get_attributions_movielens(p_concat, mask_mat, multiply_self=False)
             n_mask = tf.reduce_sum(mask, axis=(0,1)) + 1e-9
 
-            red_p = p_concat * (1 - 2 * eps) + eps  # avoid instabilities
             masked_bce = (-tf.reduce_sum(
-                    (y * tf.math.log(red_p) + (1 - y) * tf.math.log(1 - red_p)) * mask,
-                axis=0) / n_mask)
+                    (y * tf.math.log(eps + p_concat) +
+                    (1 - y) * tf.math.log(eps + 1 - p_concat)) * mask,
+                axis=0) / n_mask)   # mean along batch
 
             return tf.reduce_sum(masked_bce)
         return loss
