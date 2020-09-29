@@ -92,31 +92,27 @@ class Attr_Binary_FF_list(Model):
         v_concat = Concatenate(axis=-1)(v)
         v_out = Lambda(lambda x: MoE(x, self.C_residual, mode='L2'),
                        name='MoE')(v_concat)
+        v_out = Lambda(lambda x: (x + 1.) / 2)(v_out)
         self.model_int = Model(inputs=x, outputs=v_concat)
         self.model = Model(inputs=x, outputs=v_out)
 
 
-    def compile(self):
+    def compile(self, opt):
         super(Attr_Binary_FF_list, self).compile()
-        self.opt = Adam(1e-3)
+        self.opt = opt
         self.train_loss = tf.keras.metrics.Mean(name='train_loss')
-        self.train_acc = tf.keras.metrics.Mean(name='train_accuracy')
-        self.model_int.compile(optimizer=self.opt)
+        self.train_acc = tf.keras.metrics.Accuracy(name='train_accuracy')
+
 
     def call(self, x):
         return self.model(x)
 
 
-    @staticmethod
-    def custom_acc(y_true, y_pred):
-        ''' Deals with [-1, 1] outputs '''
-        yt_ = tf.cast(y_true > 0., tf.float32)
-        y_ = tf.cast(y_pred > 0., tf.float32)
-        return 1 - tf.reduce_mean(tf.abs(yt_ - y_))
-
     def train_step(self, data):
         eps = 1e-6  # -- for log instabilities
         x, y = data
+        if len(y.shape) == 1:
+            y = tf.expand_dims(y, -1)  # caused a strange bug in the loss
         p = self.model(x)
 
         with tf.GradientTape() as tape:
@@ -127,22 +123,25 @@ class Attr_Binary_FF_list(Model):
                                     self.C_residual,
                                     mode='L2',
                                     multiply_self = False)
-            mask = mask / (tf.reduce_sum(mask, axis=-1, keepdims=True) + 1e-9)
+            mask = mask / (tf.reduce_sum(mask, axis=-1, keepdims=True) + eps)
 
             # M-step
             red_p = (1. + p_concat) / 2.
-            red_y = (y + 1.) / 2.
-            m_step_loss = tf.reduce_mean(
-                            -tf.reduce_sum((
-                                red_y * tf.math.log(eps + red_p) +
-                                (1 - red_y) * tf.math.log(eps + 1 - red_p)
-                            ) * mask, axis=0)
-                        )
+            m_step_loss = - tf.reduce_mean(
+                                tf.reduce_sum((
+                                    y * tf.math.log(eps + red_p) +
+                                    (1 - y) * tf.math.log(eps + 1 - red_p)
+                                ) * mask, axis=-1)
+                            )
 
         grads = tape.gradient(m_step_loss, self.model_int.trainable_weights)
         self.opt.apply_gradients(zip(grads, self.model_int.trainable_weights))
 
         self.train_loss.update_state(m_step_loss)
-        self.train_acc.update_state(self.custom_acc(y, p))
+        self.train_acc.update_state(y, tf.round(p))
         return {'loss': self.train_loss.result(),
                 'acc': self.train_acc.result() }
+
+    @property
+    def metrics(self):
+        return [self.train_loss, self.train_acc]

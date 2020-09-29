@@ -280,7 +280,6 @@ params = {
     'dF': args.div_F,            # hidden layer divider
     'DF': args.mult_F,            # hidden layer multiplier
     'cb_factor': args.cb_F,     # aug data multiplier
-    'loss': 'intr_l2_tiled',
 }
 m = Int_NCF_MLP(params)
 
