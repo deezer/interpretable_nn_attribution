@@ -6,11 +6,11 @@ Source code of our long paper [Making neural networks interpretable with attribu
 <a href="https://vimeo.com/455947337">
 	<img src='data/img/teaser.png' width='70%'/>
 </a><br>
-<a href="https://vimeo.com/455947337">Watch our video teaser!</a>
-<br>(3rd Best video teaser award)
+<span><a href="https://vimeo.com/455947337">Watch our video teaser!</a> (3rd Best video teaser award)</span>
 </center>
 
-<br>
+<br><br>
+
 <center>
 <a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf">
 	<img src='data/img/slides.jpg' width='70%'/>
@@ -18,12 +18,14 @@ Source code of our long paper [Making neural networks interpretable with attribu
 <a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf">RecSys slides</a>
 </center>
 
+<br><br>
+
 **Abstract**
 > Explaining recommendations enables users to understand whether recommended items are relevant to their needs and has been shown to increase their trust in the system. More generally, if designing explainable machine learning models is key to check the sanity and robustness of a decision process and improve their efficiency, it however remains a challenge for complex architectures, especially deep neural networks that are often deemed "black-box". In this paper, we propose a novel formulation of interpretable deep neural networks for the attribution task. Differently to popular post-hoc methods, our approach is interpretable by design. Using masked weights, hidden features can be deeply attributed, split into several input-restricted sub-networks and trained as a boosted mixture of experts. Experimental results on synthetic data and real-world recommendation tasks demonstrate that our method enables to build models achieving close predictive performances to their non-interpretable counterparts, while providing informative attribution interpretations.
 
-<br>
 <img src='data/img/principle.png' width='90%'/>
-<br>
+
+<br><br>
 
 Our method is a new intrinsic interpretation method that allows to solve the attribution task using many deep complex architectures (eg. feed-forward networks, recurrent neural networks, Transformer, ...).
 
@@ -32,8 +34,6 @@ We were inspired by generalised additive models and propose an extension to any 
 $ f(x) = \sum_{s \in \mathcal{S}} \alpha_s(x_{|s})f_s(x_{|s}) $
 
 For a visual comparison of our method to popular post-hoc methods, please take a look at [this quite long but we hope informative notebook](https://github.com/deezer/interpretable_nn_attribution/blob/master/toy/related_methods.ipynb).  
-
-
 
 ## Installation
 
