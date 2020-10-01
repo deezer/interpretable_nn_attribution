@@ -2,23 +2,9 @@
 
 Source code of our long paper [Making neural networks interpretable with attribution: application to implicit signals prediction](https://arxiv.org/abs/2008.11406) published in the proceeding of the _14th ACM Conference on Recommender Systems (RecSys 2020)_.
 
-<center>
-<a href="https://vimeo.com/455947337">
-	<img src='data/img/teaser.png' width='70%'/>
-</a><br>
-<span><a href="https://vimeo.com/455947337">Watch our video teaser!</a> (3rd Best video teaser award)</span>
-</center>
-
-<br><br>
-
-<center>
-<a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf">
-	<img src='data/img/slides.jpg' width='70%'/>
-</a><br>
-<a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf">RecSys slides</a>
-</center>
-
-<br><br>
+| <a href="https://vimeo.com/455947337">Watch our video teaser!</a>(3rd Best video teaser award)</span> | <a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf">RecSys slides</a> |
+|:-----:|:------:|
+| <a href="https://vimeo.com/455947337"><img src='data/img/teaser.png' width='100%'/></a><br><span> | <a href="https://github.com/deezer/interpretable_nn_attribution/blob/master/data/RecSys_presentation.pdf"><img src='data/img/slides.jpg' width='100%'/></a> |
 
 **Abstract**
 > Explaining recommendations enables users to understand whether recommended items are relevant to their needs and has been shown to increase their trust in the system. More generally, if designing explainable machine learning models is key to check the sanity and robustness of a decision process and improve their efficiency, it however remains a challenge for complex architectures, especially deep neural networks that are often deemed "black-box". In this paper, we propose a novel formulation of interpretable deep neural networks for the attribution task. Differently to popular post-hoc methods, our approach is interpretable by design. Using masked weights, hidden features can be deeply attributed, split into several input-restricted sub-networks and trained as a boosted mixture of experts. Experimental results on synthetic data and real-world recommendation tasks demonstrate that our method enables to build models achieving close predictive performances to their non-interpretable counterparts, while providing informative attribution interpretations.
