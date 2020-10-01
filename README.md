@@ -17,7 +17,7 @@ Our method is a new intrinsic interpretation method that allows to solve the att
 
 We were inspired by generalised additive models and propose an extension to any multivariate experts model by formulating our predictor as a general weight sum:
 
-$ f(x) = \sum_{s \in \mathcal{S}} \alpha_s(x_{|s})f_s(x_{|s}) $
+<img src='data/img/eq_moe.png' width='250px' />
 
 For a visual comparison of our method to popular post-hoc methods, please take a look at [this quite long but we hope informative notebook](https://github.com/deezer/interpretable_nn_attribution/blob/master/toy/related_methods.ipynb).  
 
