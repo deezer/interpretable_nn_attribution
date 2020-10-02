@@ -19,7 +19,12 @@ We were inspired by generalised additive models and propose an extension to any 
 
 <img src='data/img/eq_moe.png' width='250px' />
 
-For a visual comparison of our method to popular post-hoc methods, please take a look at [this quite long but we hope informative notebook](https://github.com/deezer/interpretable_nn_attribution/blob/master/toy/related_methods.ipynb).  
+For a visual comparison of our method to popular post-hoc methods, please take a look at this quite long but we hope informative notebook:
+- [Open `toy/related_methods.ipynb` in Google Colab](https://colab.research.google.com/github/deezer/interpretable_nn_attribution/blob/master/toy/related_methods.ipynb)
+- [Open `toy/related_methods.ipynb` in GitHub](
+https://github.com/deezer/interpretable_nn_attribution/blob/master/toy/related_methods.ipynb), it does not seem to be loading properly in GitHub, you may need to download and open it locally.
+
+
 
 ## Installation
 
